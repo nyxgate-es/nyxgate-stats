@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Nyxgate Stats</title>
 
@@ -18,9 +19,9 @@ body{
 .container{
     display:flex;
     justify-content:center;
-    gap:30px;
-    padding:20px;
+    gap:40px;
     flex-wrap:wrap;
+    padding:20px;
 }
 
 .card{
@@ -29,18 +30,19 @@ body{
 }
 
 .value{
-    font-size:48px;
-    color:#7ec8ff;
+    font-size:52px;
     font-weight:bold;
+    color:#7ec8ff;
 }
 
 .label{
-    margin-top:8px;
-    color:#cfd8e3;
+    margin-top:6px;
     font-size:18px;
+    color:#cfd8e3;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -63,19 +65,22 @@ async function loadStats(){
         const proxy =
             "https://api.allorigins.win/raw?url=";
 
-        const target =
+        const url =
             "https://app.lightbucket.co/astronomers/nyxgate";
 
         const response =
-            await fetch(proxy + encodeURIComponent(target));
+            await fetch(proxy + encodeURIComponent(url));
 
         const html =
             await response.text();
 
-        function extract(label){
+        function getValue(label){
 
             const regex =
-                new RegExp(label + "[^0-9]*([0-9.,]+)", "i");
+                new RegExp(
+                    "<li>\\s*([0-9,.]+)\\s*" + label,
+                    "i"
+                );
 
             const match =
                 html.match(regex);
@@ -84,16 +89,16 @@ async function loadStats(){
         }
 
         const targets =
-            extract("Targets");
+            getValue("targets");
 
         const sessions =
-            extract("Sessions");
+            getValue("sessions");
 
         const images =
-            extract("Images");
+            getValue("images");
 
         const hours =
-            extract("Hours");
+            getValue("hours");
 
         document.getElementById("stats").innerHTML = `
 
@@ -120,10 +125,15 @@ async function loadStats(){
         `;
 
     }
-    catch(e){
+    catch(error){
 
-        document.getElementById("stats").innerHTML =
-            "<div style='padding:20px'>Error loading data</div>";
+        document.getElementById("stats").innerHTML = `
+            <div style="padding:20px">
+                Error loading data
+            </div>
+        `;
+
+        console.error(error);
 
     }
 
