@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Nyxgate Stats</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#0b1220;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+
+.container{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    padding:20px;
+    flex-wrap:wrap;
+}
+
+.card{
+    text-align:center;
+    min-width:120px;
+}
+
+.value{
+    font-size:48px;
+    color:#7ec8ff;
+    font-weight:bold;
+}
+
+.label{
+    margin-top:8px;
+    color:#cfd8e3;
+    font-size:18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container" id="stats">
+
+<div class="card">
+<div class="value">...</div>
+<div class="label">Loading</div>
+</div>
+
+</div>
+
+<script>
+
+async function loadStats(){
+
+    try{
+
+        const proxy =
+            "https://api.allorigins.win/raw?url=";
+
+        const target =
+            "https://app.lightbucket.co/astronomers/nyxgate";
+
+        const response =
+            await fetch(proxy + encodeURIComponent(target));
+
+        const html =
+            await response.text();
+
+        function extract(label){
+
+            const regex =
+                new RegExp(label + "[^0-9]*([0-9.,]+)", "i");
+
+            const match =
+                html.match(regex);
+
+            return match ? match[1] : "--";
+        }
+
+        const targets =
+            extract("Targets");
+
+        const sessions =
+            extract("Sessions");
+
+        const images =
+            extract("Images");
+
+        const hours =
+            extract("Hours");
+
+        document.getElementById("stats").innerHTML = `
+
+            <div class="card">
+                <div class="value">${targets}</div>
+                <div class="label">Targets</div>
+            </div>
+
+            <div class="card">
+                <div class="value">${sessions}</div>
+                <div class="label">Sessions</div>
+            </div>
+
+            <div class="card">
+                <div class="value">${images}</div>
+                <div class="label">Images</div>
+            </div>
+
+            <div class="card">
+                <div class="value">${hours}</div>
+                <div class="label">Hours</div>
+            </div>
+
+        `;
+
+    }
+    catch(e){
+
+        document.getElementById("stats").innerHTML =
+            "<div style='padding:20px'>Error loading data</div>";
+
+    }
+
+}
+
+loadStats();
+
+</script>
+
+</body>
+</html>
