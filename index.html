@@ -63,13 +63,17 @@ async function loadStats(){
     try{
 
         const proxy =
-            "https://api.allorigins.win/raw?url=";
+            "https://corsproxy.io/?";
 
         const url =
             "https://app.lightbucket.co/astronomers/nyxgate";
 
         const response =
-            await fetch(proxy + encodeURIComponent(url));
+            await fetch(proxy + encodeURIComponent(url), {
+            headers: {
+            "x-requested-with": "XMLHttpRequest"
+            }
+        });
 
         const html =
             await response.text();
