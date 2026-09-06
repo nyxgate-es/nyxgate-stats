@@ -63,16 +63,14 @@ async function loadStats(){
     try{
 
         const proxy =
-            "https://corsproxy.io/?";
+        "https://corsproxy.io/?url=";
 
         const url =
-            "https://app.lightbucket.co/astronomers/nyxgate";
+        "https://app.lightbucket.co/astronomers/nyxgate";
 
         const response =
-            await fetch(proxy + encodeURIComponent(url), {
-            headers: {
-            "x-requested-with": "XMLHttpRequest"
-            }
+        await fetch(proxy + encodeURIComponent(url));
+        
         });
 
         const html =
