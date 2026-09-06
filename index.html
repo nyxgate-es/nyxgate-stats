@@ -59,76 +59,61 @@ body{
 <script>
 async function loadStats() {
 
-    try {
-        const url = "https://app.lightbucket.co/astronomers/nyxgate";
-        const proxy = "https://corsproxy.io/?url=";
+    const url = "https://app.lightbucket.co/astronomers/nyxgate";
+    const proxy = "https://corsproxy.io/?url=";
 
-        const response = await fetch(
-            proxy + encodeURIComponent(url)
+    const response = await fetch(
+        proxy + encodeURIComponent(url)
+    );
+
+    const html = await response.text();
+
+    console.log(html);
+
+    function getValue(label) {
+        const regex = new RegExp(
+            "(\\d[\\d,.]*)\\s*" + label,
+            "i"
         );
 
-        if (!response.ok) {
-            throw new Error("HTTP " + response.status);
+        const match = html.match(regex);
+
+        if (match) {
+            return match[1];
         }
 
-        const html = await response.text();
-
-        console.log("HTML recibido:");
-        console.log(html);
-
-        function getValue(label) {
-            const regex = new RegExp(
-                "(\\d[\\d,.]*)\\s*" + label,
-                "i"
-            );
-
-            const match = html.match(regex);
-
-            return match ? match[1] : "--";
-        }
-
-        const targets = getValue("targets");
-        const sessions = getValue("sessions");
-        const images = getValue("images");
-        const hours = getValue("hours");
-
-        document.getElementById("stats").innerHTML = `
-            <div class="card">
-                <div class="value">${targets}</div>
-                <div class="label">Objetos</div>
-            </div>
-
-            <div class="card">
-                <div class="value">${sessions}</div>
-                <div class="label">Sesiones</div>
-            </div>
-
-            <div class="card">
-                <div class="value">${images}</div>
-                <div class="label">Imágenes</div>
-            </div>
-
-            <div class="card">
-                <div class="value">${hours}</div>
-                <div class="label">Horas</div>
-            </div>
-        `;
-
-    } catch (error) {
-
-        console.error("Error:", error);
-
-        document.getElementById("stats").innerHTML = `
-            <div style="padding:20px">
-                Error cargando datos
-            </div>
-        `;
+        return "--";
     }
+
+    const targets = getValue("targets");
+    const sessions = getValue("sessions");
+    const images = getValue("images");
+    const hours = getValue("hours");
+
+    document.getElementById("stats").innerHTML =
+        '<div class="card">' +
+            '<div class="value">' + targets + '</div>' +
+            '<div class="label">Objetos</div>' +
+        '</div>' +
+
+        '<div class="card">' +
+            '<div class="value">' + sessions + '</div>' +
+            '<div class="label">Sesiones</div>' +
+        '</div>' +
+
+        '<div class="card">' +
+            '<div class="value">' + images + '</div>' +
+            '<div class="label">Imágenes</div>' +
+        '</div>' +
+
+        '<div class="card">' +
+            '<div class="value">' + hours + '</div>' +
+            '<div class="label">Horas</div>' +
+        '</div>';
 }
 
 loadStats();
 </script>
-
     
 </body>
 </html>
