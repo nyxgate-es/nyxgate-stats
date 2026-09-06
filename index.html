@@ -58,34 +58,39 @@ body{
 
 <script>
 
-async function loadStats(){
+async function loadStats() {
 
-    try{
-
-        const proxy =
-        "https://corsproxy.io/?url=";
+    try {
 
         const url =
-        "https://app.lightbucket.co/astronomers/nyxgate";
+            "https://app.lightbucket.co/astronomers/nyxgate";
 
-        const response =
-        await fetch(proxy + encodeURIComponent(url));
-        
-        });
+        const proxy =
+            "https://corsproxy.io/?url=";
 
-        const html =
-            await response.text();
+        const response = await fetch(
+            proxy + encodeURIComponent(url)
+        );
 
-        function getValue(label){
+        if (!response.ok) {
+            throw new Error(
+                "HTTP " + response.status
+            );
+        }
 
-            const regex =
-                new RegExp(
-                    "<li>\\s*([0-9,.]+)\\s*" + label,
-                    "i"
-                );
+        const html = await response.text();
 
-            const match =
-                html.match(regex);
+        console.log("HTML recibido:");
+        console.log(html);
+
+        function getValue(label) {
+
+            const regex = new RegExp(
+                "(\\d[\\d,.]*)\\s*" + label,
+                "i"
+            );
+
+            const match = html.match(regex);
 
             return match ? match[1] : "--";
         }
@@ -126,24 +131,20 @@ async function loadStats(){
 
         `;
 
-    }
-    catch(error){
+    } catch (error) {
+
+        console.error("Error:", error);
 
         document.getElementById("stats").innerHTML = `
             <div style="padding:20px">
                 Error cargando datos
             </div>
         `;
-
-        console.error(error);
-
     }
-
 }
 
 loadStats();
 
 </script>
-
 </body>
 </html>
